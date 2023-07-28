@@ -1,0 +1,2 @@
+Befor run this app install :
+passport : composer require laravel/passport
