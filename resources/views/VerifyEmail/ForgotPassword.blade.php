@@ -10,6 +10,7 @@
     <h1>email verifikasi</h1>
     <h1>{{ $user->name }}</h1>
     <a href="{{ $resetLink }}">tap here</a>
-    {{-- <a href="">{{ $resetLink }}</a> --}}
+    <h4>{{ Illuminate\Mail\Markdown::parse($resetLink) }}</h4>
+    
 </body>
 </html>

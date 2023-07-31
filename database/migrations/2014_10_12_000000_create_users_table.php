@@ -14,7 +14,18 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->date('tgl_lahir');
+            $table->string('tempat_lahir');
+            $table->string('jenkel');
+            $table->string('alamat');
+            $table->string('no_telp');
             $table->string('email')->unique();
+            $table->string('pendidikan');
+            $table->string('pekerjaan');
+            $table->string('range_gaji');
+            $table->string('status');
+            $table->string('jumlah_anak');
+            $table->string('img');
             $table->string('role');
             $table->integer('otp_code')->nullable();
             $table->timestamp('email_verified_at')->nullable();

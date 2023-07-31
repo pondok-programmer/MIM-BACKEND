@@ -10,5 +10,7 @@
     <h1>email verifikasi</h1>
     <h1>{{ $users->name }}</h1>
     <a href="{{ $verification }}">tap here</a>
+    <h2>atau salin link ini</h2>
+    <h4>{{ Illuminate\Mail\Markdown::parse($verification) }}</h4>
 </body>
 </html>

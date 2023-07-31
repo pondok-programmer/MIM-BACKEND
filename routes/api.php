@@ -24,11 +24,14 @@ Route::group(['middleware' => ['guest']], function(){
     Route::post('registerMobile', [AuthMobileController::class, 'registerMobile']);
     Route::post('regiseterMobileAdmin', [AuthMobileController::class, 'regiseterMobileAdmin']);
     Route::get('verify-email-mobile', [VerificationController::class, 'verifyOtp']);
+    Route::post('resendVerificationOtp', [VerificationController::class, 'resendVerificationOtp']);
 //mobile end
 //web
     Route::post('register', [AuthController::class, 'register']);
     Route::post('registerAdmin', [AuthController::class, 'registerAdmin']);
     Route::get('verify-email/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
+    Route::post('resendVerification', [VerificationController::class, 'resendVerification']);
+
 //web end
     Route::post('login', [LoginController::class, 'login']);
     Route::post('sendResetLink', [PasswordController::class, 'sendResetLink']);

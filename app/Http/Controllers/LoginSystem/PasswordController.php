@@ -69,7 +69,7 @@ class PasswordController extends Controller
             $token = Password::getRepository()->create($user);
         
             // Kirim email dengan link reset password ke pengguna
-            $resetLink = 'https://carikuliner@gmail.com/reset-password?token=' . $token;
+            $resetLink = '{{ url }}/sendResetLink?token=' . $token;
         
             $SendForgotPasswordJob = new SendForgotPasswordJob($user, $resetLink);
             dispatch($SendForgotPasswordJob);
@@ -82,12 +82,18 @@ class PasswordController extends Controller
 
     public function resetPassword(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(),[
             'token' => 'required',
             'email' => 'required|email',
             'password' => 'required|min:6|confirmed',
         ]);
 
+        if($validator->fails()){
+            return response()->json([
+                'Error' => true,
+                'Message' => $validator->errors()
+            ]);
+        }
         $response = Password::reset(
             $request->only('email', 'password', 'token'),
             function ($user, $password) {
