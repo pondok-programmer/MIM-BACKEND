@@ -13,19 +13,19 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->date('tgl_lahir');
-            $table->string('tempat_lahir');
-            $table->string('jenkel');
-            $table->string('alamat');
-            $table->string('no_telp');
+            $table->string('name')->nullable();
+            $table->date('tgl_lahir')->nullable();
+            $table->string('tempat_lahir')->nullable();
+            $table->string('jenkel')->nullable();
+            $table->string('alamat')->nullable();
+            $table->string('no_telp')->nullable();
             $table->string('email')->unique();
-            $table->string('pendidikan');
-            $table->string('pekerjaan');
-            $table->string('range_gaji');
-            $table->string('status');
-            $table->string('jumlah_anak');
-            $table->string('img');
+            $table->string('pendidikan')->nullable();
+            $table->string('pekerjaan')->nullable();
+            $table->string('range_gaji')->nullable();
+            $table->string('status')->nullable();
+            $table->string('jumlah_anak')->nullable();
+            $table->string('img')->nullable();
             $table->string('role');
             $table->integer('otp_code')->nullable();
             $table->timestamp('email_verified_at')->nullable();

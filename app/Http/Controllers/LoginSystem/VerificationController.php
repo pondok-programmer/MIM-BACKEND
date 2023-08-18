@@ -46,21 +46,21 @@ class VerificationController extends Controller
         $validator = Validator::make($request->all(), [
             'otp_code' => 'required',
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Validation Fails',
                 'errors' => $validator->errors()
             ], 422);
         }
-
-        $user = User::where('otp_code', $request->otp_code)->first();
     
-        if ($user && $request->otp_code == $user->otp_code) {
+        $user = User::where('otp_code', $request->otp_code)->first();
+        
+        if ($user) {
             $user->email_verified_at = now();
             $user->otp_code = null;
             $user->save();
-    
+        
             $token = $user->createToken('Token')->accessToken;
             return response()->json([
                 'message' => 'Success',
@@ -68,11 +68,11 @@ class VerificationController extends Controller
             ], 200);
         } else {
             return response()->json([
-                'message' => 'Invalid email or OTP code',
+                'message' => 'Invalid OTP code',
             ], 422);
         }
-
     }
+    
 
     public function resendVerification(Request $request){
         $validator = Validator::make($request->all(), [
