@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Konten\ArtikelDakwahController;
 use App\Http\Controllers\Konten\InfoKajianController;
+use App\Http\Controllers\Konten\SearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginSystem\AuthController;
@@ -44,6 +45,9 @@ Route::group(['middleware' => ['guest']], function(){
 Route::group(['middleware' => ['auth:api', 'role:user,admin']], function(){
     Route::post('logout', [LoginController::class, 'logout']);
     Route::post('changePassword/{id}', [PasswordController::class, 'changePassword']);
+
+    Route::get('searchUser', [SearchController::class, 'searchUser']);
+    Route::get('searchKonten', [SearchController::class, 'searchKonten']);
 
     Route::post('showKajian', [InfoKajianController::class, 'showKajian']);
     Route::post('showArtikel', [ArtikelDakwahController::class, 'showArtikel']);
