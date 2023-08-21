@@ -45,7 +45,7 @@ class AuthMobileController extends Controller
         
         $users = User::create([
             'name' => $request->name, //full name
-            'tgl_lahir' => Carbon::createFromFormat('l, d-F-Y', $request->tgl_lahir)->format('Y-m-d'),//l, d-F-Y(hari, tanggal-bulan-tahun)
+            'tgl_lahir' => $request->tgl_lahir, // tahun-bulan-tanggal
             'tempat_lahir' => $request->tempat_lahir,
             'jenkel' => $request->jenkel,//Laki-laki Perempuan
             'alamat' => $request->alamat,//tulis dari user
