@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('amal_yaumis', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id');
+            $table->date('hari');
             $table->boolean('subuh');
             $table->boolean('zuhur');
             $table->boolean('ashar');
@@ -22,8 +24,7 @@ return new class extends Migration
             $table->boolean('dhuha');
             $table->boolean('witir');
             $table->boolean('puasa');
-            $table->boolean('dzikir_pagi');
-            $table->boolean('dzikir_petang');
+            $table->boolean('dzikir');
             $table->boolean('kajian_subuh');
             $table->timestamps();
         });

@@ -99,10 +99,10 @@ class InfoKajianController extends Controller
 
     public function deleteKajian($id){
 
-        InfoKajian::destroy($id);
+            InfoKajian::destroy($id);
 
-            return response()->json([
-                'Artikel' => 'Kajian Ini Berhasil DiHapus'
-            ]);
+                return response()->json([
+                    'Artikel' => 'Kajian Ini Berhasil DiHapus'
+                ]);
     }
 }

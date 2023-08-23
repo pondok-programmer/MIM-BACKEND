@@ -18,26 +18,18 @@ class VerificationController extends Controller
                 'message' => 'Email verified fails'
             ];
         }
-        
         $user = User::find($id);
 
         if(!$user->email_verified_at){
             $user->email_verified_at = now();
             $user->save();
 
-            
-            return response()->json([
-                'message' => 'Success',
-            ], 200);
+            return view('VerifyEmail.SuccessVerify');
+        }else if($user->email_verified_at){
+            return view('VerifyEmail.HasVerify');
+        }else{
+            return view('VerifyEmail.InvalidVerify');
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Email verified successfully'
-            ]);
-        }else {
-            return response()->json([
-                'message' => 'Invalid Link',
-            ], 422);
         }
         
     }
@@ -61,16 +53,9 @@ class VerificationController extends Controller
             $user->otp_code = null;
             $user->save();
         
-            $token = $user->createToken('Token')->accessToken;
-            return response()->json([
-                'message' => 'Success',
-                'token' => $token
-            ], 200);
-        } else {
-            return response()->json([
-                'message' => 'Invalid OTP code',
-            ], 422);
-        }
+            // $token = $user->createToken('Token')->accessToken;
+            return view('VerifyEmail.SuccessVerify');
+        } 
     }
     
 
