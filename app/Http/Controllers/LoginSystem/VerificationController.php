@@ -47,15 +47,26 @@ class VerificationController extends Controller
         }
     
         $user = User::where('otp_code', $request->otp_code)->first();
+         
+        if($user->otp_expired && now()->greaterThan($user->otp_expired)){
+
+            $user->otp_code = null;
+            $user->otp_expired = null;
+            $user->save();
+
+            return response()->json([
+                'massage'=>'OTP Has Expired, Please Resend OTP'
+            ]);
+        }
         
-        if ($user) {
             $user->email_verified_at = now();
             $user->otp_code = null;
+            $user->otp_expired = null;
             $user->save();
         
             // $token = $user->createToken('Token')->accessToken;
             return view('VerifyEmail.SuccessVerify');
-        } 
+        
     }
     
 
@@ -126,14 +137,18 @@ class VerificationController extends Controller
                 do {
                     $verificationOtp = mt_rand(1000, 9999);
                     $checkCode = User::where('otp_code', $verificationOtp)->first();
+                    $users->otp_code = $verificationOtp;
                 } while ($checkCode);
-                
+
+                $users->otp_expired = now()->addMinutes(1);
+                $users->save();
                 $SendEmailVerifyJob = new SendOtpJob($users, $verificationOtp);
                 dispatch($SendEmailVerifyJob);
 
                 return response()->json([
                     'success'=>true,
-                    'massage'=>'Please check your mail to activate account.'
+                    'massage'=>'Please check your mail to activate account.',
+                    'OTP' => $verificationOtp
                 ]);
             }
         }

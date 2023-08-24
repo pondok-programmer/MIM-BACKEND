@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\LoginSystem;
 
+use DateTimeZone;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Jobs\SendOtpJob;
@@ -61,6 +62,9 @@ class AuthMobileController extends Controller
             'password' => Hash::make($request->password),
         ]);
         
+        $users->otp_expired = now()->addMinutes(1);
+        $users->save();
+
         $SendEmailVerifyJob = new SendOtpJob($users, $verificationOtp);
         dispatch($SendEmailVerifyJob);
         

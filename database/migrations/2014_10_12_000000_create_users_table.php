@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('img')->nullable();
             $table->string('role');
             $table->integer('otp_code')->nullable();
+            $table->timestamp('otp_expired')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
