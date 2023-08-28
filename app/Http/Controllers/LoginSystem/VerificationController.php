@@ -18,26 +18,18 @@ class VerificationController extends Controller
                 'message' => 'Email verified fails'
             ];
         }
-        
         $user = User::find($id);
 
         if(!$user->email_verified_at){
             $user->email_verified_at = now();
             $user->save();
 
-            
-            return response()->json([
-                'message' => 'Success',
-            ], 200);
+            return view('VerifyEmail.SuccessVerify');
+        }else if($user->email_verified_at){
+            return view('VerifyEmail.HasVerify');
+        }else{
+            return view('VerifyEmail.InvalidVerify');
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Email verified successfully'
-            ]);
-        }else {
-            return response()->json([
-                'message' => 'Invalid Link',
-            ], 422);
         }
         
     }
@@ -46,33 +38,37 @@ class VerificationController extends Controller
         $validator = Validator::make($request->all(), [
             'otp_code' => 'required',
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Validation Fails',
                 'errors' => $validator->errors()
             ], 422);
         }
-
-        $user = User::where('otp_code', $request->otp_code)->first();
     
-        if ($user && $request->otp_code == $user->otp_code) {
+        $user = User::where('otp_code', $request->otp_code)->first();
+         
+        if($user->otp_expired && now()->greaterThan($user->otp_expired)){
+
+            $user->otp_code = null;
+            $user->otp_expired = null;
+            $user->save();
+
+            return response()->json([
+                'massage'=>'OTP Has Expired, Please Resend OTP'
+            ]);
+        }
+        
             $user->email_verified_at = now();
             $user->otp_code = null;
+            $user->otp_expired = null;
             $user->save();
-    
-            $token = $user->createToken('Token')->accessToken;
-            return response()->json([
-                'message' => 'Success',
-                'token' => $token
-            ], 200);
-        } else {
-            return response()->json([
-                'message' => 'Invalid email or OTP code',
-            ], 422);
-        }
-
+        
+            // $token = $user->createToken('Token')->accessToken;
+            return view('VerifyEmail.SuccessVerify');
+        
     }
+    
 
     public function resendVerification(Request $request){
         $validator = Validator::make($request->all(), [
@@ -141,14 +137,18 @@ class VerificationController extends Controller
                 do {
                     $verificationOtp = mt_rand(1000, 9999);
                     $checkCode = User::where('otp_code', $verificationOtp)->first();
+                    $users->otp_code = $verificationOtp;
                 } while ($checkCode);
-                
+
+                $users->otp_expired = now()->addMinutes(1);
+                $users->save();
                 $SendEmailVerifyJob = new SendOtpJob($users, $verificationOtp);
                 dispatch($SendEmailVerifyJob);
 
                 return response()->json([
                     'success'=>true,
-                    'massage'=>'Please check your mail to activate account.'
+                    'massage'=>'Please check your mail to activate account.',
+                    'OTP' => $verificationOtp
                 ]);
             }
         }

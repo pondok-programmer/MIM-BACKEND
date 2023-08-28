@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\Konten\AmalYaumiController;
+use App\Http\Controllers\Konten\ArtikelDakwahController;
+use App\Http\Controllers\Konten\InfoKajianController;
+use App\Http\Controllers\Konten\PendataanHafalanController;
+use App\Http\Controllers\Konten\SearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginSystem\AuthController;
@@ -7,6 +12,7 @@ use App\Http\Controllers\LoginSystem\LoginController;
 use App\Http\Controllers\LoginSystem\PasswordController;
 use App\Http\Controllers\LoginSystem\AuthMobileController;
 use App\Http\Controllers\LoginSystem\VerificationController;
+use App\Http\Controllers\Profil\ProfilController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,5 +47,32 @@ Route::group(['middleware' => ['guest']], function(){
 Route::group(['middleware' => ['auth:api', 'role:user,admin']], function(){
     Route::post('logout', [LoginController::class, 'logout']);
     Route::post('changePassword/{id}', [PasswordController::class, 'changePassword']);
-    
- });
+
+    Route::get('searchUser', [SearchController::class, 'searchUser']);
+    Route::get('searchKonten', [SearchController::class, 'searchKonten']);
+
+    Route::post('showKajian', [InfoKajianController::class, 'showKajian']);
+    Route::post('showArtikel', [ArtikelDakwahController::class, 'showArtikel']);
+
+    Route::post('createHafalan', [PendataanHafalanController::class, 'createHafalan']);
+    Route::post('showHafalan', [PendataanHafalanController::class, 'showHafalan']);
+    Route::post('updateHafalan/{id}', [PendataanHafalanController::class, 'updateHafalan']);
+    Route::post('deleteHafalan/{id}', [PendataanHafalanController::class, 'deleteHafalan']);
+
+    Route::post('showProfil', [ProfilController::class, 'showProfil']);
+    Route::post('updateProfil/{id}', [ProfilController::class, 'updateProfil']);
+    Route::post('deleteAcc/{id}', [ProfilController::class, 'deleteAcc']);
+
+    Route::post('createAmal', [AmalYaumiController::class, 'createAmal']);
+    Route::post('showAmal', [AmalYaumiController::class, 'showAmal']);
+});
+
+Route::group(['middleware' => ['auth:api', 'role:admin']], function(){
+    Route::post('createKajian', [InfoKajianController::class, 'createKajian']);
+    Route::post('updateKajian/{id}', [InfoKajianController::class, 'updateKajian']);
+    Route::post('deleteKajian/{id}', [InfoKajianController::class, 'deleteKajian']);
+
+    Route::post('createArtikel', [ArtikelDakwahController::class, 'createArtikel']);
+    Route::post('updateArtikel/{id}', [ArtikelDakwahController::class, 'updateArtikel']);
+    Route::post('deleteArtikel/{id}', [ArtikelDakwahController::class, 'deleteArtikel']);
+});

@@ -91,8 +91,8 @@
       <td align="center">
         <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
           <tr>
-            <td align="left" bgcolor="#ffffff" style="padding: 36px 24px 0; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; border-top: 3px solid #e5ba73;">
-              <h1 style="margin: 0; font-size: 32px; font-weight: 700;color: #c58940; letter-spacing: -1px; line-height: 48px;">Verifikasi Akun MIM Anda</h1>
+            <td align="center" bgcolor="#ffffff" style="padding: 36px 24px 0; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; border-top: 3px solid #e5ba73;">
+              <h1 style="margin: 0; font-size: 30px; font-weight: 700;color: #c58940; letter-spacing: -1px; line-height: 48px;">Verifikasi Akun Berhasil</h1>
             </td>
           </tr>
         </table>
@@ -104,49 +104,8 @@
         <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
 
           <tr>
-            <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-              <p style="margin: 0;">Pembuatan akun MIM Anda tinggal satu langkah lagi. <br/>Silahkan tekan tombol di bawah untuk menyelesaikan pembuatan akun MIM Anda. Agar akun Anda terverifikasi.</p>
-            </td>
-          </tr>
-
-          <tr>
-            <td align="left" bgcolor="#ffffff">
-              <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                <tr>
-                  <td align="center" bgcolor="#ffffff" style="padding: 12px;">
-                    <table border="0" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td align="center" bgcolor="#e5ba73" style="border-radius: 6px;">
-                          <a href="{{ $verification }}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 6px;">Verifikasi Sekarang</a>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <tr>
-            <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-              <p style="margin: 0;">Jika tidak berhasil coba lakukan dengan mengklik tautan berikut :</p>
-              <p style="margin: 0;"><a href="{{ $verification }}" target="_blank">{{ Illuminate\Mail\Markdown::parse($verification) }}</a></p>
-            </td>
-          </tr>
-
-          <tr>
-            <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px; border-bottom: 3px solid #d4dadf">
-              <p style="margin: 0;"><i>Jazakumullah khairan katsiran</i>,<br> Tim MIM</p>
-            </td>
-          </tr>
-
-        </table>
-      </td>
-    </tr>
-
-          <tr>
-            <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-              <p style="margin: 0;">&copy; MIM 2023 , All rights Reserved</p>
+            <td align="center" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 19px; line-height: 24px;text-align: center;">
+              <p style="margin: 0;">Selamat Akun Anda telah terverifikasi ,<br/> Sekarang Anda sudah menjadi keluarga MIM. <br/><br/></p> <p style="font-size: 25px; font-weight: 700;color: #c58940;"><i>Selamat menghafal.</i></p>
             </td>
           </tr>
 
