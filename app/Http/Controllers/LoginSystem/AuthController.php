@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\LoginSystem;
 
+use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Jobs\SendEmailVerifyJob;
@@ -91,6 +92,7 @@ class AuthController extends Controller
                     'no_telp' => $request->no_telp,
                     'email' => $request->email,
                     'role' => 'admin',
+                    'email_verified_at' => Carbon::now(),
                     'password' => Hash::make($request->password),
                 ]);
 

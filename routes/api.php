@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\BacaanSholatController;
 use App\Http\Controllers\Konten\AmalYaumiController;
 use App\Http\Controllers\Konten\ArtikelDakwahController;
 use App\Http\Controllers\Konten\InfoKajianController;
@@ -75,4 +76,7 @@ Route::group(['middleware' => ['auth:api', 'role:admin']], function(){
     Route::post('createArtikel', [ArtikelDakwahController::class, 'createArtikel']);
     Route::post('updateArtikel/{id}', [ArtikelDakwahController::class, 'updateArtikel']);
     Route::post('deleteArtikel/{id}', [ArtikelDakwahController::class, 'deleteArtikel']);
+
+    Route::post('createBacaan', [BacaanSholatController::class, 'createBacaan']);
+    Route::post('showBacaan', [BacaanSholatController::class, 'showBacaan']);
 });
