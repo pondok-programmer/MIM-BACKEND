@@ -37,7 +37,7 @@ class AmalYaumiController extends Controller
             'user_id' =>$user,
             'hari' => Carbon::now()->toDateString(),
             'subuh' =>$request->subuh,
-            'zuhur' =>$request->zuhur ,
+            'zuhur' =>$request->zuhur,
             'ashar'=>$request->ashar,
             'maghrib'=>$request->maghrib,
             'isya'=>$request->isya,

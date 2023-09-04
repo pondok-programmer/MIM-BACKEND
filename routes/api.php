@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\BacaanSholatController;
 use App\Http\Controllers\Konten\AmalYaumiController;
 use App\Http\Controllers\Konten\ArtikelDakwahController;
 use App\Http\Controllers\Konten\InfoKajianController;
@@ -51,8 +52,6 @@ Route::group(['middleware' => ['auth:api', 'role:user,admin']], function(){
     Route::get('searchUser', [SearchController::class, 'searchUser']);
     Route::get('searchKonten', [SearchController::class, 'searchKonten']);
 
-    Route::post('showKajian', [InfoKajianController::class, 'showKajian']);
-    Route::post('showArtikel', [ArtikelDakwahController::class, 'showArtikel']);
 
     Route::post('createHafalan', [PendataanHafalanController::class, 'createHafalan']);
     Route::post('showHafalan', [PendataanHafalanController::class, 'showHafalan']);
@@ -75,4 +74,15 @@ Route::group(['middleware' => ['auth:api', 'role:admin']], function(){
     Route::post('createArtikel', [ArtikelDakwahController::class, 'createArtikel']);
     Route::post('updateArtikel/{id}', [ArtikelDakwahController::class, 'updateArtikel']);
     Route::post('deleteArtikel/{id}', [ArtikelDakwahController::class, 'deleteArtikel']);
+
+    Route::post('createBacaan', [BacaanSholatController::class, 'createBacaan']);
+    Route::post('showBacaan', [BacaanSholatController::class, 'showBacaan']);
+
+    Route::post('showAllUser', [ProfilController::class, 'showAllUser']);
+    Route::post('showOneUser/{id}', [ProfilController::class, 'showOneUser']);
 });
+
+    Route::post('showKajian', [InfoKajianController::class, 'showKajian']);
+    Route::post('showOneKajian/{id}', [InfoKajianController::class, 'showOneKajian']);
+    Route::post('showArtikel', [ArtikelDakwahController::class, 'showArtikel']);
+    Route::post('showOneArtikel/{id}', [ArtikelDakwahController::class, 'showOneArtikel']);

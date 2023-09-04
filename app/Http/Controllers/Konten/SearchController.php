@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Konten;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\ArtikelDakwah;
 use App\Models\InfoKajian;
@@ -32,7 +31,7 @@ class SearchController extends Controller
         'ArtikelDakwah' => $artikelDakwahResults
     ];
 
-    return response()->json($results);
+    return response()->json(["DataSearch" => $results]);
 }
 
     public function searchUser(Request $request){
@@ -44,7 +43,7 @@ class SearchController extends Controller
                     ->orWhere('no_telp', 'like', "%{$query}%")
                     ->get();
 
-        return response()->json($results);
+        return response()->json(["DataSearch" => $results]);
     }
 
 }

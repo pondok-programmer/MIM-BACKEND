@@ -9,6 +9,7 @@
         "cloudinary-labs/cloudinary-laravel": "^2.0",
         "cloudinary/cloudinary_php": "^2",
         "guzzlehttp/guzzle": "^7.2",
+        "hashids/hashids": "^5.0",
         "laravel/framework": "^10.0",
         "laravel/passport": "^11.8",
         "laravel/sanctum": "^3.2",

@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Hashids\Hashids;
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -33,7 +34,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'img',
         'role',
         'otp_code',
+        'otp_expired',
         'password',
+        'email_verified_at'
     ];
 
     /**
@@ -54,6 +57,11 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getHashIdAttribute() {
+        $hashids = new Hashids('your-secret-salt', 10); // panjang minimum 10
+        return $hashids->encode($this->attributes['id']);
+    }
 
     public function amalyaumi(){
         return $this->hasMany(AmalYaumi::class, 'user_id', 'id');

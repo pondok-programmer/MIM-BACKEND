@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Profil;
 
 use Carbon\Carbon;
 use App\Models\User;
+use Hashids\Hashids;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -15,13 +16,21 @@ class ProfilController extends Controller
         $users = auth()->user();
         $user = $users->id;
 
-        $profil = User::where('id', $user)->get();
+        $hashids = new Hashids('your-secret-salt', 10); // sesuaikan dengan konfigurasi Anda
+        $hashedId = $hashids->encode($user);
+
+        $profil = User::where('id', $user)->first();
+
+        $responseUser = $profil->toArray();
+        $responseUser['id'] = $hashedId;
         return response()->json([
-            'Profil' => $profil 
+            'Profil' => $responseUser
         ]);
     }
 
     public function updateProfil(Request $request, $id){
+        $hashids = new Hashids('your-secret-salt', 10);
+        $user = User::find($hashids->decode($id)[0]);
 
         $validate = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -43,8 +52,6 @@ class ProfilController extends Controller
                     'message'=>$validate->errors()
                 ]);
             }
-            
-            $user = User::find($id);
 
             if ($request->hasFile('img')) {
                 // Menghapus foto lama jika ada
@@ -83,12 +90,43 @@ class ProfilController extends Controller
             ]);
     }
 
-    public function deleteAcc($id){
+    
+    
+    public function showAllUser(){
+        $users = User::where('role', 'user')->get();
+        $hashids = new Hashids('your-secret-salt', 10);
 
-        User::destroy($id);
-        
+        $usersArray = $users->map(function($user) use ($hashids) {
+            $array = $user->toArray();
+            $encodedId = $hashids->encode($user->id);
+            if ($encodedId) {
+                $array['id'] = $encodedId;
+            } else {
+                return response()->json([
+                    'Data User' => 'Id Tidak Bisa DIHash'
+                ]);    
+            }
+            return $array;
+        })->toArray();
+
         return response()->json([
-            'User' => 'Account has been delete'
+            'Data User' => $usersArray
+        ]);
+    }
+
+    public function showOneUser($id){
+        $hashids = new Hashids('your-secret-salt', 10);
+        $userShow = User::where('id', $hashids->decode($id))->first();
+
+        if(!$userShow){
+            return response()->json([
+                'Data User' => 'Not Found'
+            ],404);
+        }
+        $responseUser = $userShow->toArray();
+        $responseUser[0] = $hashids ;
+        return response()->json([
+            'Profil' => $responseUser
         ]);
     }
 }
