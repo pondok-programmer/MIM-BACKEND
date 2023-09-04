@@ -4,6 +4,7 @@ namespace App\Http\Controllers\LoginSystem;
 
 use Carbon\Carbon;
 use App\Models\User;
+use Hashids\Hashids;
 use Illuminate\Http\Request;
 use App\Jobs\SendEmailVerifyJob;
 use Illuminate\Support\Facades\URL;
@@ -39,36 +40,41 @@ class AuthController extends Controller
             // $uploadedImage = Cloudinary::upload($request->file('img')->getRealPath(), [
             //     'folder' => 'MIM/ProfilMIM'
             // ]);
-                $users = User::create([
-                    'name' => $request->name, //full name
-                    'tgl_lahir' => $request->tgl_lahir,
-                    'tempat_lahir' => $request->tempat_lahir,
-                    'jenkel' => $request->jenkel,//Laki-laki Perempuan
-                    'alamat' => $request->alamat,//tulis dari user
-                    'no_telp' => $request->no_telp,// +62
-                    'email' => $request->email,
-                    'pendidikan' => $request->pendidikan,//pendidikan terakhir
-                    'pekerjaan' => $request->pekerjaan,
-                    'range_gaji' => $request->range_gaji,
-                    'status' => $request->status,//status pernikahan sudah menika atau belum
-                    'jumlah_anak' => $request->jumlah_anak,
-                    'role' => 'user',
-                    'password' => Hash::make($request->password),
+            
+                    $users = User::create([
+                        'name' => $request->name, //full name
+                        'tgl_lahir' => $request->tgl_lahir,
+                        'tempat_lahir' => $request->tempat_lahir,
+                        'jenkel' => $request->jenkel,//Laki-laki Perempuan
+                        'alamat' => $request->alamat,//tulis dari user
+                        'no_telp' => $request->no_telp,// +62
+                        'email' => $request->email,
+                        'pendidikan' => $request->pendidikan,//pendidikan terakhir
+                        'pekerjaan' => $request->pekerjaan,
+                        'range_gaji' => $request->range_gaji,
+                        'status' => $request->status,//status pernikahan sudah menikah atau belum
+                        'jumlah_anak' => $request->jumlah_anak,
+                        'role' => 'user',
+                        'password' => Hash::make($request->password),
+                    ]);
+
+                    $hashids = new Hashids('your-secret-salt', 10);
+                    $hashedId = $hashids->encode($users->id);
+                    $verification = URL::temporarySignedRoute(
+                        'verification.verify',
+                        now()->addMinutes(5),
+                        ['id' => $hashedId, 'hash' => sha1($users->getEmailForVerification())]
+                    );
+                    $responseUser = $users->toArray();
+                    $responseUser['id'] = $hashedId;
+                $SendEmailVerifyJob = new SendEmailVerifyJob($users, $verification);
+                dispatch($SendEmailVerifyJob);
+
+                return response()->json([
+                    'Massage' => 'userCreatedSuccessfully, Please Check Your Email',
+                    'user' => $responseUser 
+                    
                 ]);
-
-            $verification = URL::temporarySignedRoute(
-                'verification.verify',
-                now()->addMinutes(60),
-                ['id' => $users->id, 'hash' => sha1($users->getEmailForVerification())]
-            );
-
-            $SendEmailVerifyJob = new SendEmailVerifyJob($users, $verification);
-            dispatch($SendEmailVerifyJob);
-
-            return response()->json([
-                'Massage' => 'userCreatedSuccessfully, Please Check Your Email',
-                'user' => $users
-            ]);
     }
 
     
@@ -96,28 +102,30 @@ class AuthController extends Controller
                     'password' => Hash::make($request->password),
                 ]);
 
-            $verification = URL::temporarySignedRoute(
-                'verification.verify',
-                now()->addMinutes(60),
-                ['id' => $users->id, 'hash' => sha1($users->getEmailForVerification())]
-            );
+                $hashids = new Hashids('your-secret-salt', 10);
+                $hashedId = $hashids->encode($users->id);
+                // $verification = URL::temporarySignedRoute(
+                //     'verification.verify',
+                //     now()->addMinutes(60),
+                //     ['id' => $hashedId, 'hash' => sha1($users->getEmailForVerification())]
+                // );
 
-            $SendEmailVerifyJob = new SendEmailVerifyJob($users, $verification);
-            dispatch($SendEmailVerifyJob);
+                $responseUser = $users->toArray();
+                $responseUser['id'] = $hashedId;
+                // dispatch(new SendEmailVerifyJob($users, $verification));
 
             return response()->json([
-                'Massage' => 'userCreatedSuccessfully, Please Check Your Email',
-                'user' => $users
+                'Massage' => 'adminCreatedSuccessfully',
+                'user' => $responseUser 
             ]);
     }
 
     public function deleteAcc($id){
-        $user = User::where('id', $id)->delete();
-
-        if($user){
-            return response()->json([
-                'Massage' => 'userDeleteSuccessfully',
-            ]);
-        }
+        $hashids = new Hashids('your-secret-salt', 10);
+        User::destroy($hashids->decode($id));
+        
+        return response()->json([
+            'User' => 'Account has been delete'
+        ]);
     }
 }

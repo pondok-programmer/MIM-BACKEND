@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Validator;
+use Hashids\Hashids;
 
 class PasswordController extends Controller
 {
@@ -66,10 +67,11 @@ class PasswordController extends Controller
         } else if (!$user->email_verified_at) {
             return response()->json(['message' => 'Email Not Verify'], 404);
         } else {
+            
             $token = Password::getRepository()->create($user);
         
             // Kirim email dengan link reset password ke pengguna
-            $resetLink = '{{ url }}/sendResetLink?token=' . $token;
+            $resetLink = 'http://mim.muhammadiyahexpo.com/api/resetPassword?token=' . $token;
         
             $SendForgotPasswordJob = new SendForgotPasswordJob($user, $resetLink);
             dispatch($SendForgotPasswordJob);

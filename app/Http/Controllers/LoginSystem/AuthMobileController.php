@@ -5,6 +5,7 @@ namespace App\Http\Controllers\LoginSystem;
 use DateTimeZone;
 use Carbon\Carbon;
 use App\Models\User;
+use Hashids\Hashids;
 use App\Jobs\SendOtpJob;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -59,18 +60,19 @@ class AuthMobileController extends Controller
             'jumlah_anak' => $request->jumlah_anak,
             'role' => 'user',
             'otp_code' => $verificationOtp,
+            'otp_expired' => now()->addMinutes(5),
             'password' => Hash::make($request->password),
         ]);
-        
-        $users->otp_expired = now()->addMinutes(1);
-        $users->save();
 
-        $SendEmailVerifyJob = new SendOtpJob($users, $verificationOtp);
-        dispatch($SendEmailVerifyJob);
-        
+        $hashids = new Hashids('your-secret-salt', 10);
+        $hashedId = $hashids->encode($users->id);
+        dispatch(new SendOtpJob($users, $verificationOtp));
+        $responseUser = $users->toArray();
+        $responseUser['id'] = $hashedId;
+
         return response()->json([
-            'Massage' => 'userCreatedSuccessfully, Please Check Your Email',
-            'User' => $users
+            'message' => 'User created successfully. Please check your email.',
+            'user' => $responseUser
         ]);
     }
 }

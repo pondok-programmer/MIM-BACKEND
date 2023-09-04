@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '93f239212aeb45843152ad75bd4e099e9fafab02',
+        'reference' => '7575bdcd9aa9880308751d928698c1c5a06fb60d',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -201,6 +201,15 @@
             'install_path' => __DIR__ . '/../hamcrest/hamcrest-php',
             'aliases' => array(),
             'dev_requirement' => true,
+        ),
+        'hashids/hashids' => array(
+            'pretty_version' => '5.0.2',
+            'version' => '5.0.2.0',
+            'reference' => '197171016b77ddf14e259e186559152eb3f8cf33',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../hashids/hashids',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'illuminate/auth' => array(
             'dev_requirement' => false,
@@ -418,7 +427,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '93f239212aeb45843152ad75bd4e099e9fafab02',
+            'reference' => '7575bdcd9aa9880308751d928698c1c5a06fb60d',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

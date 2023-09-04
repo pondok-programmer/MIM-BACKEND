@@ -3,34 +3,50 @@
 namespace App\Http\Controllers\LoginSystem;
 
 use App\Models\User;
+use Hashids\Hashids;
+use App\Jobs\SendOtpJob;
 use Illuminate\Http\Request;
 use App\Jobs\SendEmailVerifyJob;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
-use App\Jobs\SendOtpJob;
 use Illuminate\Support\Facades\Validator;
 
 class VerificationController extends Controller
 {
     public function verify(Request $request, $id){
-        if(!$request->hasValidSignature()){
+        if (!$request->hasValidSignature()) {
             return [
-                'message' => 'Email verified fails'
+                'message' => 'Email verification failed'
             ];
         }
-        $user = User::find($id);
-
-        if(!$user->email_verified_at){
+        
+        $hashids = new Hashids('your-secret-salt', 10);
+        $decodedIds = $hashids->decode($id);
+        if (!count($decodedIds)) {
+            return view('VerifyEmail.InvalidVerify');
+        }
+        $realId = $decodedIds[0];
+        
+        $user = User::find($realId);
+        
+        if (!$user) {
+            return view('VerifyEmail.InvalidVerify');
+        }
+        
+        $responseUser = $user->toArray();
+        $responseUser['id'] = $id;  // We use the original hashed ID
+        
+        if (!$user->email_verified_at) {
             $user->email_verified_at = now();
             $user->save();
-
+        
             return view('VerifyEmail.SuccessVerify');
-        }else if($user->email_verified_at){
+        } elseif ($user->email_verified_at) {
             return view('VerifyEmail.HasVerify');
-        }else{
+        } else {
             return view('VerifyEmail.InvalidVerify');
-
         }
+        
         
     }
 
@@ -94,11 +110,15 @@ class VerificationController extends Controller
                     'message' => 'Email already verified.'
                 ]);
             }else{
-                $verification = URL::temporarySignedRoute(
-                    'verification.verify',
-                    now()->addMinutes(60),
-                    ['id' => $users->id, 'hash' => sha1($users->getEmailForVerification())]
-                );
+                    $hashids = new Hashids('your-secret-salt', 10);
+                    $hashedId = $hashids->encode($users->id);
+                    $verification = URL::temporarySignedRoute(
+                        'verification.verify',
+                        now()->addMinutes(60),
+                        ['id' => $hashedId, 'hash' => sha1($users->getEmailForVerification())]
+                    );
+                    $responseUser = $users->toArray();
+                    $responseUser['id'] = $hashedId;
                 $SendEmailVerifyJob = new SendEmailVerifyJob($users, $verification);
                 dispatch($SendEmailVerifyJob);
 
@@ -140,7 +160,7 @@ class VerificationController extends Controller
                     $users->otp_code = $verificationOtp;
                 } while ($checkCode);
 
-                $users->otp_expired = now()->addMinutes(1);
+                $users->otp_expired = now()->addMinutes(2);
                 $users->save();
                 $SendEmailVerifyJob = new SendOtpJob($users, $verificationOtp);
                 dispatch($SendEmailVerifyJob);

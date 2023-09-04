@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Konten;
 
 use Carbon\Carbon;
+use Hashids\Hashids;
 use App\Models\InfoKajian;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,7 +29,7 @@ class InfoKajianController extends Controller
         $uploadedImage = Cloudinary::upload($request->file('gambar')->getRealPath(), [
             'folder' => 'MIM/thumnail_infokajian'
         ]);
-        $konten = InfoKajian::create([
+        $kontens = InfoKajian::create([
             'judul' => $request->judul,
             'gambar' => $uploadedImage->getSecurePath(),
             'waktu'=> $request->waktu,
@@ -36,6 +37,10 @@ class InfoKajianController extends Controller
             'link'=> $request->link
         ]);
 
+        $hashids = new Hashids('your-secret-salt', 10);
+        $hashedId = $hashids->encode($kontens->id);
+        $konten = $kontens->toArray();
+        $konten['id'] = $hashedId;
         return response()->json([
             'Massage' => 'ContentCreatedSuccessfully',
             'user' => $konten
@@ -44,15 +49,35 @@ class InfoKajianController extends Controller
 
     public function showKajian(){
 
-        $konten = InfoKajian::all();
+        $konten = InfoKajian::orderBy('created_at', 'desc')->paginate(3);
+
         return response()->json([
             'data' => $konten
         ]);
     }
 
-    public function updateKajian(Request $request, $id){
+    public function showOneKajian($id){
+        $hashids = new Hashids('your-secret-salt', 10);
+        $konten = InfoKajian::where('id', $hashids->decode($id))->first();
+        
+        if(!$konten){
+            return response()->json([
+                'Kajian' => null, 'Not Found'
+            ], 204);
+        }
+        return response()->json([
+            'Artikel' => $konten
+        ]);
+    }
 
-        $konten = InfoKajian::find($id);
+    public function updateKajian(Request $request, $id){
+        $hashids = new Hashids('your-secret-salt', 10);
+        $konten = InfoKajian::find($hashids->decode($id)[0]);
+        if (!$konten) {
+            return response()->json([
+                'message' => 'Kajian tidak ditemukan'
+            ], 404);
+        }
 
         $validator = Validator::make($request->all(),[
             'judul' => 'required|string',
@@ -71,7 +96,7 @@ class InfoKajianController extends Controller
 
         if ($request->hasFile('gambar')) {
             // Menghapus foto lama jika ada
-            if ($konten->poto) {
+            if ($konten->gambar) {
                 $publicId = pathinfo($konten->gambar, PATHINFO_FILENAME);
                 Cloudinary::destroy($publicId);
             }
@@ -98,8 +123,8 @@ class InfoKajianController extends Controller
     }
 
     public function deleteKajian($id){
-
-            InfoKajian::destroy($id);
+            $hashids = new Hashids('your-secret-salt', 10);
+            InfoKajian::destroy($hashids->decode($id));
 
                 return response()->json([
                     'Artikel' => 'Kajian Ini Berhasil DiHapus'
