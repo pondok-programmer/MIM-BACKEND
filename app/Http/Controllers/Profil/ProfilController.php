@@ -93,7 +93,7 @@ class ProfilController extends Controller
     
     
     public function showAllUser(){
-        $users = User::where('role', 'admin')->get();
+        $users = User::where('role', 'user')->get();
         $hashids = new Hashids('your-secret-salt', 10);
 
         $usersArray = $users->map(function($user) use ($hashids) {
@@ -112,12 +112,6 @@ class ProfilController extends Controller
         return response()->json([
             'Data User' => $usersArray
         ]);
-
-
-
-
-
-
     }
 
     public function showOneUser($id){

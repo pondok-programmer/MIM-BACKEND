@@ -73,7 +73,6 @@ class AuthController extends Controller
                 return response()->json([
                     'Massage' => 'userCreatedSuccessfully, Please Check Your Email',
                     'user' => $responseUser 
-                    
                 ]);
     }
 

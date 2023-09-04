@@ -49,7 +49,7 @@ class ArtikelDakwahController extends Controller
 
     public function showArtikel(){
 
-        $artikels = ArtikelDakwah::orderBy('created_at', 'desc')->paginate(3);
+        $artikels = ArtikelDakwah::orderBy('created_at', 'desc')->paginate(8);
 
         return response()->json([
             'Artikel' => $artikels

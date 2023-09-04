@@ -160,7 +160,7 @@ class VerificationController extends Controller
                     $users->otp_code = $verificationOtp;
                 } while ($checkCode);
 
-                $users->otp_expired = now()->addMinutes(2);
+                $users->otp_expired = now()->addMinutes(5);
                 $users->save();
                 $SendEmailVerifyJob = new SendOtpJob($users, $verificationOtp);
                 dispatch($SendEmailVerifyJob);
