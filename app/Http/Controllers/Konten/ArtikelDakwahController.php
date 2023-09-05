@@ -48,7 +48,7 @@ class ArtikelDakwahController extends Controller
     }
 
     public function showArtikel(){
-        $artikels = ArtikelDakwah::orderBy('created_at', 'desc')->paginate(8);  // 15 is the number of items per page
+        $artikels = ArtikelDakwah::orderBy('created_at', 'desc')->paginate(8);
         $hashids = new Hashids('your-secret-salt', 10);
 
         $transformedData = $artikels->getCollection()->map(function($article) use ($hashids) {

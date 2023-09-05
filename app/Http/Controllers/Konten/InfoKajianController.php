@@ -49,10 +49,26 @@ class InfoKajianController extends Controller
 
     public function showKajian(){
 
-        $konten = InfoKajian::orderBy('created_at', 'desc')->paginate(8);
+        $infoKajian = InfoKajian::orderBy('created_at', 'desc')->paginate(8);
+        $hashids = new Hashids('your-secret-salt', 10);
+
+        $transformedData = $infoKajian->getCollection()->map(function($infokajians) use ($hashids) {
+            $array = $infokajians->toArray();
+            $encodedId = $hashids->encode($infokajians->id);
+            if ($encodedId) {
+                $array['id'] = $encodedId;
+            } else {
+                return response()->json([
+                    'Data User' => 'Id Tidak Bisa DIHash'
+                ]);
+            }
+            return $array;
+        })->toArray();
+
+        $infoKajian->setCollection(collect($transformedData));
 
         return response()->json([
-            'data' => $konten
+            'Artikel' => $infoKajian
         ]);
     }
 
