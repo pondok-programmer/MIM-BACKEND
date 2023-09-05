@@ -38,11 +38,29 @@ class SearchController extends Controller
         $query = $request->get('Search');
 
         $results = User::where('role', 'user')
-                    ->orWhere('name', 'like', "%{$query}%")
-                    ->orWhere('email', 'like', "%{$query}%")
-                    ->orWhere('tempat_lahir', 'like', "%{$query}%")
-                    ->orWhere('no_telp', 'like', "%{$query}%")
-                    ->get();
+               ->where(function($q) use ($query) {
+                   $q->where('name', 'like', "%{$query}%")
+                     ->orWhere('email', 'like', "%{$query}%")
+                     ->orWhere('tempat_lahir', 'like', "%{$query}%")
+                     ->orWhere('no_telp', 'like', "%{$query}%");
+               })->get();
+
+
+    
+        return response()->json(["DataSearch" => $results]);
+    }
+
+    public function searchAdmin(Request $request){
+        $query = $request->get('Search');
+
+        $results = User::where('role', 'admin')
+               ->where(function($q) use ($query) {
+                   $q->where('name', 'like', "%{$query}%")
+                     ->orWhere('email', 'like', "%{$query}%")
+                     ->orWhere('tempat_lahir', 'like', "%{$query}%")
+                     ->orWhere('no_telp', 'like', "%{$query}%");
+               })->get();
+
 
     
         return response()->json(["DataSearch" => $results]);

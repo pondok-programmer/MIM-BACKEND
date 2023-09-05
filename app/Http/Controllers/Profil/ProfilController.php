@@ -132,9 +132,7 @@ class ProfilController extends Controller
                 'Data User' => 'Id Tidak Bisa DIHash'
             ]);    
         }
-        
 
-        
         return response()->json([
             'Profil' => $responseUser
         ]);

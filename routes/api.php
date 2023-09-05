@@ -50,6 +50,7 @@ Route::group(['middleware' => ['auth:api', 'role:user,admin']], function(){
     Route::post('changePassword/{id}', [PasswordController::class, 'changePassword']);
 
     Route::get('searchUser', [SearchController::class, 'searchUser']);
+    Route::get('searchAdmin', [SearchController::class, 'searchAdmin']);
     Route::get('searchKonten', [SearchController::class, 'searchKonten']);
 
 

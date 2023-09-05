@@ -74,12 +74,21 @@ class ArtikelDakwahController extends Controller
 
     public function showOneArtikel($id){
         $hashids = new Hashids('your-secret-salt', 10);
-        $artikel = ArtikelDakwah::where('id', $hashids->decode($id))->first();
+        $artikels = ArtikelDakwah::where('id', $hashids->decode($id))->first();
         
-        if(!$artikel){
+        if(!$artikels){
             return response()->json([
                 'Artikel' => null, 'Not Found'
             ], 204);
+        }
+        $artikel = $artikels->toArray();
+        $encodedId = $hashids->encode($artikels->id);
+        if ($encodedId) {
+            $artikel['id'] = $encodedId ;
+        } else {
+            return response()->json([
+                'Data User' => 'Id Tidak Bisa DIHash'
+            ]);    
         }
         return response()->json([
             'Artikel' => $artikel

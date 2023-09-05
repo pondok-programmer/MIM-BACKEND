@@ -74,13 +74,23 @@ class InfoKajianController extends Controller
 
     public function showOneKajian($id){
         $hashids = new Hashids('your-secret-salt', 10);
-        $konten = InfoKajian::where('id', $hashids->decode($id))->first();
+        $kontens = InfoKajian::where('id', $hashids->decode($id))->first();
         
-        if(!$konten){
+        if(!$kontens){
             return response()->json([
                 'Kajian' => null, 'Not Found'
             ], 204);
         }
+        $konten = $kontens->toArray();
+        $encodedId = $hashids->encode($kontens->id);
+        if ($encodedId) {
+            $konten['id'] = $encodedId ;
+        } else {
+            return response()->json([
+                'Data User' => 'Id Tidak Bisa DIHash'
+            ]);    
+        }
+
         return response()->json([
             'Artikel' => $konten
         ]);
