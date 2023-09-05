@@ -129,7 +129,7 @@ class ProfilController extends Controller
             $responseUser['id'] = $encodedId ;
         } else {
             return response()->json([
-                'Data User' => 'Id Tidak Bisa DIHash'
+                'DataUser' => 'Id Tidak Bisa DIHash'
             ]);    
         }
 
