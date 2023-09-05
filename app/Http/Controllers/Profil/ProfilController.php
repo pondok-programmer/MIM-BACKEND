@@ -110,7 +110,7 @@ class ProfilController extends Controller
         })->toArray();
 
         return response()->json([
-            'Data User' => $usersArray
+            'DataUser' => $usersArray
         ]);
     }
 
@@ -124,7 +124,17 @@ class ProfilController extends Controller
             ],404);
         }
         $responseUser = $userShow->toArray();
-        $responseUser[0] = $hashids ;
+        $encodedId = $hashids->encode($userShow->id);
+        if ($encodedId) {
+            $responseUser['id'] = $encodedId ;
+        } else {
+            return response()->json([
+                'Data User' => 'Id Tidak Bisa DIHash'
+            ]);    
+        }
+        
+
+        
         return response()->json([
             'Profil' => $responseUser
         ]);

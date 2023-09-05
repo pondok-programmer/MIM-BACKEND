@@ -48,12 +48,28 @@ class ArtikelDakwahController extends Controller
     }
 
     public function showArtikel(){
+        $artikels = ArtikelDakwah::orderBy('created_at', 'desc')->paginate(8);  // 15 is the number of items per page
+        $hashids = new Hashids('your-secret-salt', 10);
 
-        $artikels = ArtikelDakwah::orderBy('created_at', 'desc')->paginate(8);
+        $transformedData = $artikels->getCollection()->map(function($article) use ($hashids) {
+            $array = $article->toArray();
+            $encodedId = $hashids->encode($article->id);
+            if ($encodedId) {
+                $array['id'] = $encodedId;
+            } else {
+                return response()->json([
+                    'Data User' => 'Id Tidak Bisa DIHash'
+                ]);
+            }
+            return $array;
+        })->toArray();
+
+        $artikels->setCollection(collect($transformedData));
 
         return response()->json([
             'Artikel' => $artikels
         ]);
+
     }
 
     public function showOneArtikel($id){

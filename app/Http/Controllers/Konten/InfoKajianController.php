@@ -49,7 +49,7 @@ class InfoKajianController extends Controller
 
     public function showKajian(){
 
-        $konten = InfoKajian::orderBy('created_at', 'desc')->paginate(3);
+        $konten = InfoKajian::orderBy('created_at', 'desc')->paginate(8);
 
         return response()->json([
             'data' => $konten
